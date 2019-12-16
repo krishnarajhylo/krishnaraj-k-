@@ -1,0 +1,96 @@
+   /*Hi please check out the logiic */
+
+   void  main_execution()
+   {
+   Mode_Of_Operation  = byte_contain_mode_of_operation ;
+   masking();                                               // which channels are in parrallel
+   parallel_bits_count =  countSetBits(Mode_Of_Operation);  // division factor 
+   primary_channel     =   PositionRightmostSetbit(Mode_Of_Operation); // primary channel msb set bit 
+   update_division_factor();
+   function execution as usal ..
+   pending with end conditions ..
+   
+   }
+
+
+
+
+
+void masking()
+{
+  for ( int i=0;i<=7;i++)
+  {
+    no[i]=(((Mode_Of_Operation>>i)&0x01)?1:0);
+  }
+  
+}
+
+
+
+
+unsigned int countSetBits(unsigned int n) 
+{ 
+    unsigned int count = 0; 
+    while (n) { 
+        count += n & 1; 
+        n >>= 1; 
+    } 
+    return count; 
+} 
+
+
+
+
+int PositionRightmostSetbit(int n)      // to find primary channel 
+{ 
+    // Position variable initialize with 1 
+    // m variable is used to check the set bit 
+    int position = 1; 
+    int m = 1; 
+  
+    while (!(n & m)) { 
+  
+        // left shift 
+        m = m << 1; 
+        position++; 
+    } 
+    return position; 
+} 
+
+
+ void update_division_factor()
+ {
+    if(no[temp_ch_no] == 1  &&  parallel_bits_count > 1 )             // checking if particular chnl  is parallel & 
+       {                                                              // & corresponding bts set 
+       paChannel ->Paralleling.Div_Factor =   parallel_bits_count; // changed by kris
+       check_bit[temp_ch_no] = 1;
+       }
+       else                                                          // no division 
+       {
+          paChannel ->Paralleling.Div_Factor = 1;     
+          check_bit[temp_ch_no] = 0;
+       }
+ }
+
+
+
+/*
+void execution()
+{
+if(parallel_bits_count > 1)   // only if parallel
+     {
+      primary_channel_current =  gChannel[primary_channel].Cell.Cell_Current; 
+  
+      current_per_channel =   primary_channel_current / parallel_bits_count;
+for(int i =0;i<8;i++)
+{
+       if(no[i]==1)
+       {
+         parameters_per_channel[i] = gChannel[i];
+         parameters_per_channel[i].Cell.Cell_Current = current_per_channel;
+         gChannel[i] = parameters_per_channel[i] ;
+       }
+       
+     }
+     }
+}*/
